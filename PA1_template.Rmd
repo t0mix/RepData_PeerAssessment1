@@ -54,7 +54,12 @@ library(data.table)
 # create data.table from nonadata
 nonadatatable <- data.table(nonadata)
 # show mean and median by date from nonadatatable
-nonadatatable[,list(Mean=mean(steps),Median=median(steps)),by=date]
+nonadatatable[,list(Mean=mean(steps),Median=median(steps))]
+# show mean and median by date from nonadatatable, excluding interval with no 
+# steps (e.g, 0 steps)
+nonadatatable[nonadatatable$steps>0,list(Mean=mean(steps),Median=median(steps))]
+
+
 ```
 
 ## What is the average daily activity pattern?
@@ -110,18 +115,18 @@ hist(adjusteddata$steps)
 # create data.table from adjusteddata
 adjusteddatatable <- data.table(adjusteddata)
 # show mean and median by date from adjusteddatatable
-adjusteddatatable[,list(Mean=mean(steps),Median=median(steps)),by=date]
+adjusteddatatable[,list(Mean=mean(steps),Median=median(steps))]
+# show mean and median by date from adjusteddatatable, excluding interval with no 
+# steps (e.g, 0 steps)
+adjusteddatatable[adjusteddatatable$steps>0,list(Mean=mean(steps),Median=median(steps))]
 
-# storing mean and median summary of adjusteddatatable
-adjusteddatatablesummary <- adjusteddatatable[,list(Mean=mean(steps),Median=median(steps)),by=date]
-# storing mean and median summary of nonadatatablesummary
-nonadatatablesummary <- nonadatatable[,list(Mean=mean(steps),Median=median(steps)),by=date]
-# set date as key in nonadatatable data.table
-setkey(nonadatatablesummary,"date")
-# set date as key in adjusteddatatable data.table
-setkey(adjusteddatatablesummary,"date")
-# joining the 2 summaries to show the differences
-nonadatatablesummary[adjusteddatatablesummary]
+# compare to mean and median by date from nonadatatable, excluding interval with
+# no steps (e.g, 0 steps)
+nonadatatable[nonadatatable$steps>0,list(Mean=mean(steps),Median=median(steps))]
+
+# Showing the delta between mean and median by date from adjusteddatatable, and
+# mean and median by date from nonadatatable
+adjusteddatatable[adjusteddatatable$steps>0,list(Mean=mean(steps),Median=median(steps))] - nonadatatable[nonadatatable$steps>0,list(Mean=mean(steps),Median=median(steps))]
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
